@@ -1,0 +1,26 @@
+{
+  "name": "bulk-whatsapp-outreach-tool",
+  "version": "1.0.0",
+  "description": "A web application to generate bulk WhatsApp messaging links with brochure sharing",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "whatsapp",
+    "bulk",
+    "messaging",
+    "excel",
+    "pdf"
+  ],
+  "author": "Your Company Name",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+} 
