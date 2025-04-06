@@ -1,193 +1,206 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp Bulk Outreach Tool</title>
+    <title>WhatsApp Bulk Outreach + Brochure Tool</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="public/css/style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
-    <div class="container mx-auto px-4 py-8">
-        <header class="text-center mb-10">
-            <h1 class="text-3xl md:text-4xl font-bold text-green-600 dark:text-green-400">
-                🚀 WhatsApp Bulk Outreach Tool
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-2xl md:text-3xl font-bold text-green-600 dark:text-green-400">
+                <span class="mr-2">🚀</span>WhatsApp Bulk Outreach + Brochure Tool
             </h1>
-            <p class="text-gray-600 dark:text-gray-300 mt-2">
-                Upload Excel data, add a message, include your brochure, and reach out to customers efficiently
-            </p>
-            <div class="mt-4">
-                <button id="darkModeToggle" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 rounded-md text-gray-800 dark:text-gray-200">
-                    <span id="darkModeIcon">🌙</span> <span id="darkModeText">Dark Mode</span>
-                </button>
-            </div>
+            <button id="darkModeToggle" class="flex items-center bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 py-2 px-4 rounded-full transition-colors duration-300 hover:bg-gray-300 dark:hover:bg-gray-600">
+                <span id="darkModeIcon" class="mr-2">🌙</span>
+                <span id="darkModeText" class="hidden md:inline">Dark Mode</span>
+            </button>
         </header>
 
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8">
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Left Column: File Uploads -->
-                <div>
-                    <!-- Excel Upload Section -->
-                    <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
-                        Step 1: Upload Excel File with Numbers
-                    </h2>
-                    <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center mb-6" id="dropZone">
-                        <input type="file" id="excelFile" class="hidden" accept=".xlsx, .xls">
-                        <label for="excelFile" class="cursor-pointer">
-                            <div class="text-green-500 mb-2">
-                                <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                                </svg>
-                            </div>
-                            <p class="text-gray-700 dark:text-gray-300">Drag & Drop your Excel file here or <span class="text-green-500">browse</span></p>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">Only .xlsx or .xls files are supported</p>
-                        </label>
-                    </div>
-                    <div id="fileDetails" class="mt-4 hidden mb-6">
-                        <div class="bg-green-100 dark:bg-green-900 p-3 rounded-md">
-                            <p class="text-green-700 dark:text-green-300" id="fileName">filename.xlsx</p>
-                            <div class="flex justify-between items-center mt-2">
-                                <p class="text-sm text-gray-600 dark:text-gray-400" id="numberCount">0 numbers found</p>
-                                <button id="removeFile" class="text-red-500 text-sm">Remove</button>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <!-- Input Section -->
+            <div id="inputsSection" class="mb-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Excel File Upload -->
+                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg transition-all duration-300">
+                        <h2 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-100 flex items-center">
+                            <span class="mr-2">📊</span>Upload Excel/CSV File with Phone Numbers
+                        </h2>
+                        <div id="dropZone" class="border-2 border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 rounded-md p-6 text-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900 transition-all duration-300">
+                            <input type="file" id="excelFile" class="hidden" accept=".xlsx, .xls, .csv">
+                            <div class="flex flex-col items-center justify-center">
+                                <span class="text-4xl mb-3">📄</span>
+                                <p class="mb-2 text-gray-700 dark:text-gray-300">Drag and drop your Excel/CSV file here</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">or</p>
+                                <button type="button" class="mt-2 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-300" onclick="document.getElementById('excelFile').click()">Browse Files</button>
                             </div>
                         </div>
-                    </div>
-                    <div id="fileError" class="mt-4 hidden mb-6">
-                        <div class="bg-red-100 dark:bg-red-900 p-3 rounded-md">
-                            <p class="text-red-700 dark:text-red-300" id="errorMessage">Error message here</p>
-                        </div>
-                    </div>
-
-                    <!-- Brochure Upload Section -->
-                    <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
-                        Step 2: Upload Brochure (PDF/Image)
-                    </h2>
-                    <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center" id="brochureDropZone">
-                        <input type="file" id="brochureFile" class="hidden" accept=".pdf,.jpg,.jpeg,.png,.gif">
-                        <label for="brochureFile" class="cursor-pointer">
-                            <div class="text-blue-500 mb-2">
-                                <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
+                        <div id="fileDetails" class="mt-4 hidden bg-green-50 dark:bg-green-900 p-3 rounded-md">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-700 dark:text-gray-300">File: <span id="fileName" class="font-medium"></span></p>
+                                    <p class="text-sm text-gray-700 dark:text-gray-300">Numbers: <span id="numberCount" class="font-medium"></span></p>
+                                </div>
+                                <button id="removeFile" class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
                             </div>
-                            <p class="text-gray-700 dark:text-gray-300">Upload your company brochure or <span class="text-blue-500">browse</span></p>
-                            <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">PDF or image files (max 10MB)</p>
-                        </label>
-                    </div>
-
-                    <!-- Brochure Upload Progress -->
-                    <div id="uploadProgress" class="mt-4 hidden">
-                        <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                            <div id="progressBar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
                         </div>
-                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1" id="uploadStatus">Uploading... 0%</p>
-                    </div>
-
-                    <!-- Brochure Details -->
-                    <div id="brochureDetails" class="mt-4 hidden">
-                        <div class="bg-blue-100 dark:bg-blue-900 p-3 rounded-md">
-                            <p class="text-blue-700 dark:text-blue-300" id="brochureName">brochure.pdf</p>
-                            <div class="flex justify-between items-center mt-2">
-                                <p class="text-sm text-gray-600 dark:text-gray-400" id="brochureSize">0 KB</p>
-                                <button id="removeBrochure" class="text-red-500 text-sm">Remove</button>
-                            </div>
+                        <div id="fileError" class="mt-4 hidden bg-red-50 dark:bg-red-900 p-3 rounded-md">
+                            <p class="text-sm text-red-700 dark:text-red-300" id="errorMessage"></p>
                         </div>
                     </div>
 
-                    <!-- Brochure Preview -->
-                    <div id="brochurePreview" class="mt-4 hidden">
-                        <h3 class="text-md font-medium mb-2 text-gray-800 dark:text-gray-200">Brochure Preview:</h3>
-                        <div class="border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-                            <div id="previewContent" class="w-full h-40 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-                                <!-- Preview content will be inserted here -->
+                    <!-- Message Composition -->
+                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg transition-all duration-300">
+                        <h2 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-100 flex items-center">
+                            <span class="mr-2">✉️</span>Compose Your Message
+                        </h2>
+                        <div class="mb-4">
+                            <textarea id="messageText" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500" rows="5" placeholder="Type your message here..."></textarea>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">The brochure link will be added at the end of your message.</p>
+                        </div>
+                        <div class="bg-gray-100 dark:bg-gray-600 p-3 rounded-md">
+                            <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Message Preview:</p>
+                            <p id="messagePreview" class="text-sm whitespace-pre-line text-gray-800 dark:text-gray-200">Enter your message above to see the preview</p>
+                        </div>
+                    </div>
+
+                    <!-- Brochure Upload -->
+                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg transition-all duration-300">
+                        <h2 class="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-100 flex items-center">
+                            <span class="mr-2">📎</span>Upload Brochure or Document
+                        </h2>
+                        <div id="brochureDropZone" class="border-2 border-dashed border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 rounded-md p-6 text-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900 transition-all duration-300">
+                            <input type="file" id="brochureFile" class="hidden" accept=".pdf,.jpg,.jpeg,.png,.gif,.docx,.doc,.ppt,.pptx,.txt,.mp4">
+                            <div class="flex flex-col items-center justify-center">
+                                <span class="text-4xl mb-3">📄</span>
+                                <p class="mb-2 text-gray-700 dark:text-gray-300">Drag and drop your brochure here</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Supported formats: PDF, Images, Word, PPT, Text, Videos</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">Maximum size: 20MB</p>
+                                <button type="button" class="mt-2 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-300" onclick="document.getElementById('brochureFile').click()">Browse Files</button>
                             </div>
                         </div>
+                        <div id="uploadProgress" class="mt-4 hidden">
+                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                                <div id="progressBar" class="bg-green-600 h-2.5 rounded-full" style="width: 0%"></div>
+                            </div>
+                            <p id="uploadStatus" class="text-sm text-gray-700 dark:text-gray-300 mt-2">Uploading... 0%</p>
+                        </div>
+                        <div id="brochureDetails" class="mt-4 hidden bg-green-50 dark:bg-green-900 p-3 rounded-md">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-700 dark:text-gray-300">File: <span id="brochureName" class="font-medium"></span></p>
+                                    <p class="text-sm text-gray-700 dark:text-gray-300">Size: <span id="brochureSize" class="font-medium"></span></p>
+                                </div>
+                                <button id="removeBrochure" class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preview Section -->
+                    <div id="brochurePreview" class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg transition-all duration-300 hidden">
+                        <h3 class="text-lg font-semibold mb-3 text-gray-800 dark:text-gray-100">Brochure Preview</h3>
+                        <div id="previewContent" class="flex flex-col items-center justify-center p-4 bg-gray-100 dark:bg-gray-800 rounded-md max-h-60 overflow-hidden"></div>
                     </div>
                 </div>
 
-                <!-- Right Column: Message Composition -->
-                <div>
-                    <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
-                        Step 3: Compose Your Message
-                    </h2>
-                    <div>
-                        <label for="messageText" class="block text-gray-700 dark:text-gray-300 mb-2">Enter your message</label>
-                        <textarea id="messageText" rows="5" class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 p-3 focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Namaste sir 🙏, hum XYZ company se hai. Kya aap hamare product me interested hain?"></textarea>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                            Your brochure link will be automatically added at the end of the message
-                        </p>
-                    </div>
-
-                    <!-- Message Preview -->
-                    <div class="mt-6">
-                        <h3 class="text-lg font-medium mb-3 text-gray-800 dark:text-gray-200">
-                            Message Preview:
-                        </h3>
-                        <div class="border border-gray-300 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-700">
-                            <div id="messagePreview" class="text-gray-800 dark:text-gray-200 whitespace-pre-line">
-                                <!-- Message preview will be displayed here -->
-                                Enter your message above to see the preview
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-6">
-                        <button id="generateLinks" class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-md disabled:opacity-50 disabled:cursor-not-allowed">
-                            Generate WhatsApp Links
-                        </button>
-                    </div>
+                <!-- Generate Links Button -->
+                <div class="mt-6 flex justify-center">
+                    <button id="generateLinks" class="bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-6 rounded-md transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd" />
+                        </svg>
+                        Generate WhatsApp Links
+                    </button>
                 </div>
             </div>
-        </div>
 
-        <!-- Results Section -->
-        <div id="resultsSection" class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8 hidden">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-                <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">
-                    Generated WhatsApp Links
-                </h2>
-                <div class="mt-3 md:mt-0 flex space-x-3">
-                    <button id="openAllLinks" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex items-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+            <!-- Results Section -->
+            <div id="resultsSection" class="hidden">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">Generated WhatsApp Links</h2>
+                
+                <!-- Action Buttons -->
+                <div class="mb-4 flex flex-wrap gap-2">
+                    <button id="sendAllLinks" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-300 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd" />
+                        </svg>
+                        Send All (Batched)
+                    </button>
+                    <button id="openAllLinks" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-300 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
                         </svg>
                         Open All Links
                     </button>
-                    <button id="downloadCSV" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md flex items-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    <button id="downloadCSV" class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-300 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
                         </svg>
-                        Download as CSV
+                        Download CSV
                     </button>
                 </div>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="min-w-full">
-                    <thead>
-                        <tr class="bg-gray-100 dark:bg-gray-700">
-                            <th class="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold">Number</th>
-                            <th class="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold">Message Preview</th>
-                            <th class="py-3 px-4 text-left text-gray-700 dark:text-gray-300 font-semibold">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="resultsTable">
-                        <!-- Results will be populated here -->
-                    </tbody>
-                </table>
-            </div>
-            <div class="mt-4 text-center">
-                <p class="text-gray-700 dark:text-gray-300">
-                    ✅ Total numbers detected: <span id="totalNumbers">0</span>
-                </p>
+                
+                <!-- Send Progress -->
+                <div id="sendProgress" class="mb-4 bg-gray-100 dark:bg-gray-700 p-4 rounded-lg hidden">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-medium text-gray-800 dark:text-gray-200">Sending Progress</h3>
+                        <div id="sendCounter" class="text-sm font-medium text-gray-700 dark:text-gray-300">0/0</div>
+                    </div>
+                    <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5 mb-4">
+                        <div id="sendProgressBar" class="bg-green-600 h-2.5 rounded-full progress-animation" style="width: 0%"></div>
+                    </div>
+                    <button id="cancelSending" class="bg-red-600 hover:bg-red-700 text-white font-medium py-1 px-3 rounded-md transition-colors duration-300 text-sm">
+                        Cancel Sending
+                    </button>
+                </div>
+
+                <!-- Results Table -->
+                <div class="bg-white dark:bg-gray-700 rounded-lg shadow overflow-hidden">
+                    <div class="p-3 border-b border-gray-200 dark:border-gray-600 flex justify-between items-center">
+                        <div class="text-gray-800 dark:text-gray-200 font-medium">
+                            Numbers Found: <span id="totalNumbers" class="font-bold">0</span>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+                            <thead class="bg-gray-50 dark:bg-gray-800">
+                                <tr>
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        Phone Number
+                                    </th>
+                                    <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        Message Preview
+                                    </th>
+                                    <th scope="col" class="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultsTable" class="bg-white dark:bg-gray-700 divide-y divide-gray-200 dark:divide-gray-600">
+                                <!-- Results will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <footer class="text-center py-6 text-gray-600 dark:text-gray-400">
-            <p>Made with ❤️ by Your Company Name</p>
+        <footer class="mt-8 text-center text-gray-600 dark:text-gray-400 text-sm">
+            <p>© 2023 WhatsApp Bulk Outreach Tool | <a href="#" class="text-green-600 dark:text-green-400 hover:underline">Documentation</a></p>
         </footer>
     </div>
-
-    <script src="public/js/app.js"></script>
+    
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html> 
